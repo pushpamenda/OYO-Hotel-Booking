@@ -24,3 +24,24 @@ def sendEmailToken(email, token):
         [email],
         fail_silently=False,
     )
+
+
+def sendOTPtoEmail(email, otp):
+    subject = "OTP for Account Login"
+    message = f"""
+    Hi there,
+
+    Use below OTP to Login :
+     {otp} 
+
+    Thank you,
+    Hotel Booking Team
+    """
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [email],
+        fail_silently=False,
+    )
