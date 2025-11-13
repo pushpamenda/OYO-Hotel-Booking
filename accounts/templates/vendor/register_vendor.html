@@ -4,6 +4,7 @@
 
 <div class="container mt-5 pt-5 pb-5">
     <div class="col-6 mx-auto card shadow p-4" style="border:none">
+        <h2>VENDOR REGISTER</h2>
         <form method="POST">
           {% include "utils/alerts.html" %}
           {% csrf_token %}
@@ -14,6 +15,10 @@
              <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Last Name</label>
               <input type="text" name="last_name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Business Name</label>
+            <input type="text" name="business_name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
             </div>
              <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Email Address</label>

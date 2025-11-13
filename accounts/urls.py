@@ -6,5 +6,8 @@ urlpatterns = [
     path('register/', views.register_page, name='register_page'),
     path('send_otp/<email>/' , views.send_otp, name='send_otp'),
     path('verify_otp/<email>/' , views.verify_otp, name='verify_otp'),
+    path('login_vendor/' , views.login_vendor, name='login_vendor'),
+    path('register_vendor/' , views.register_vendor, name='register_vendor'),
+    path('dashboard/', views.dashboard , name="dashboard"),
     path('verify-accounts/<str:token>/', views.verify_email_token, name='verify_email_token'),
 ]
