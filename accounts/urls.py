@@ -8,6 +8,9 @@ urlpatterns = [
     path('verify_otp/<email>/' , views.verify_otp, name='verify_otp'),
     path('login_vendor/' , views.login_vendor, name='login_vendor'),
     path('register_vendor/' , views.register_vendor, name='register_vendor'),
-    path('dashboard/', views.dashboard , name="dashboard"),
+    path('vendor_dashboard/', views.vendor_dashboard, name="vendor_dashboard"),
+    path('add_hotels/',views.add_hotels,name="add_hotels"),
+    path('<slug>upload_images/', views.upload_images,name="upload_images"),
+    path('delete_image/<int:id>/', views.delete_image, name='delete_image'),
     path('verify-accounts/<str:token>/', views.verify_email_token, name='verify_email_token'),
 ]

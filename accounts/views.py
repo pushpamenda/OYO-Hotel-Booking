@@ -2,11 +2,13 @@ from django.shortcuts import render,redirect
 from .models import HotelUser,HotelVendor,Hotel,Ameneties,HotelImages
 from django.db.models import Q
 from django.contrib import messages
-from .utils import generateRandomToken,sendEmailToken ,sendOTPtoEmail
+from .utils import generateRandomToken,sendEmailToken ,sendOTPtoEmail ,generateSlug
 from django.contrib.auth import authenticate, login
 import random
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+
+
 
 # Create your views here.
 def login_page(request):    
@@ -141,30 +143,30 @@ def login_vendor(request):
         email = request.POST.get('email', '').strip().lower()
         password = request.POST.get('password')
 
-        # 🔍 Find vendor by email (case-insensitive)
+        #  Find vendor by email (case-insensitive)
         hotel_user = HotelVendor.objects.filter(email__iexact=email).first()
 
         if not hotel_user:
             messages.warning(request, "No Account Found.")
             return redirect('/accounts/login_vendor/')
         
-        # 🔒 Check if account is verified
+        #  Check if account is verified
         if not hotel_user.is_verified:
             messages.warning(request, "Your account is not verified yet. Please check your email.")
             return redirect('/accounts/login_vendor/')
 
-        # ✅ Authenticate using username, not email
+        #  Authenticate using username, not email
         user = authenticate(username=hotel_user.username, password=password)
 
         if user:
             login(request, user)
             messages.success(request, "Login Successful!")
-            return redirect('/accounts/dashboard/')
+            return redirect('/accounts/vendor_dashboard/')
         else:
             messages.warning(request, "Invalid Password.")
             return redirect('/accounts/login_vendor/')
 
-    # 🖥️ GET request → render login page
+    #  GET request → render login page
     return render(request, 'vendor/login_vendor.html')
 
 
@@ -206,8 +208,67 @@ def register_vendor(request):
     return render(request, 'vendor/register_vendor.html')
 
 @login_required(login_url='login_vendor')
-def dashboard(request):
+def vendor_dashboard(request):
     # Retrieve hotels owned by the current vendor
     hotels = Hotel.objects.filter(hotel_owner=request.user)
     context = {'hotels': hotels}
     return render(request, 'vendor/vendor_dashboard.html', context)
+
+@login_required(login_url='login_vendor')
+def add_hotels(request):
+    if request.method == "POST":
+        hotel_name = request.POST.get('hotel_name')
+        hotel_description = request.POST.get('hotel_description')
+        ameneties= request.POST.getlist('ameneties')
+        hotel_price= request.POST.get('hotel_price')
+        hotel_offer_price= request.POST.get('hotel_offer_price')
+        hotel_location= request.POST.get('hotel_location')
+        hotel_slug = generateSlug(hotel_name)
+
+        hotel_vendor = HotelVendor.objects.get(id = request.user.id)
+        
+        hotel_obj = Hotel.objects.create(
+            hotel_name = hotel_name,
+            hotel_description = hotel_description,
+            hotel_price = hotel_price,
+            hotel_offer_price = hotel_offer_price,
+            hotel_location = hotel_location,
+            hotel_slug = hotel_slug,
+            hotel_owner = hotel_vendor
+        )
+
+        for ameneti in ameneties:
+            ameneti = Ameneties.objects.get(id = ameneti)
+            hotel_obj.ameneties.add(ameneti)
+            hotel_obj.save()
+
+        messages.success(request, "Hotel Created")
+        return redirect('/accounts/add_hotels')
+
+
+    ameneties = Ameneties.objects.all()
+
+    return render(request, 'vendor/add_hotels.html', context = {'ameneties' : ameneties})
+
+@login_required(login_url='login_vendor')
+def upload_images(request, slug):
+    hotel_obj = Hotel.objects.get(hotel_slug = slug)
+    if request.method == "POST":
+        image = request.FILES['image']
+        print(image)
+        HotelImages.objects.create(
+        hotel = hotel_obj,
+        image = image
+        )
+        return HttpResponseRedirect(request.path_info)
+
+    return render(request, 'vendor/upload_images.html', context = {'images' : hotel_obj.hotel_images.all()})
+
+@login_required(login_url='login_vendor')
+def delete_image(request, id):
+    print(id)
+    print("#######")
+    hotel_image = HotelImages.objects.get(id = id)
+    hotel_image.delete()
+    messages.success(request, "Hotel Image deleted")
+    return redirect('/accounts/vendor_dashboard/')
