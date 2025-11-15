@@ -12,5 +12,7 @@ urlpatterns = [
     path('add_hotels/',views.add_hotels,name="add_hotels"),
     path('<slug>upload_images/', views.upload_images,name="upload_images"),
     path('delete_image/<int:id>/', views.delete_image, name='delete_image'),
+    path('edit_hotel/<slug>/',views.edit_hotel , name = "edit_hotel"),
+    path('logout/' , views.logout_view , name="logout_view"),
     path('verify-accounts/<str:token>/', views.verify_email_token, name='verify_email_token'),
 ]

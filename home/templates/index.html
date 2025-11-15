@@ -33,54 +33,30 @@
 
 <div class="container mt-5 pt-5 pb-5">
     <div class="row">
-        <div class="col-md-3">
+      {% for hotel in hotels %}
+        <div class="col-md-3 mt-3">
         <div class="card shadow" style="width: 15rem;">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf_2_d3uqNSVmYnypSU6WFf4WeoueuBByJEA&s" class="card-img-top" alt="...">
             <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+            <h5 class="card-title">{{hotel.hotel_name}}</h5>
+            
+              Price<span class="badge text-bg-danger">{{hotel.hotel_price}}</span>
+              Offer<span class="badge text-bg-success">{{hotel.hotel_offer_price}}</span>
+              <hr>
+              <p>{{hotel.hotel_location}}</p>
             <span class="badge text-bg-primary">Swimming Pool</span>
             <span class="badge text-bg-primary">AC</span>
         </div>
         </div>
     </div>
 
-
-    <div class="col-md-3">
-    <div class="card shadow" style="width: 15rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf_2_d3uqNSVmYnypSU6WFf4WeoueuBByJEA&s" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-            <span class="badge text-bg-primary">Swimming Pool</span>
-            <span class="badge text-bg-primary">AC</span>
-        </div>
-    </div>
-</div>
+    {% endfor %}
 
 
-<div class="col-md-3">
-        <div class="card shadow" style="width: 15rem;">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf_2_d3uqNSVmYnypSU6WFf4WeoueuBByJEA&s" class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-            <span class="badge text-bg-primary">Swimming Pool</span>
-            <span class="badge text-bg-primary">AC</span>
-        </div>
-    </div>
-</div>
+    
 
 
-<div class="col-md-3">
-        <div class="card shadow" style="width: 15rem;">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf_2_d3uqNSVmYnypSU6WFf4WeoueuBByJEA&s" class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-            <span class="badge text-bg-primary">Swimming Pool</span>
-            <span class="badge text-bg-primary">AC</span>
-        </div>
-    </div>
-</div>
+
+
+
 {% endblock %}

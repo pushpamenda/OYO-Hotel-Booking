@@ -3,7 +3,7 @@ from .models import HotelUser,HotelVendor,Hotel,Ameneties,HotelImages
 from django.db.models import Q
 from django.contrib import messages
 from .utils import generateRandomToken,sendEmailToken ,sendOTPtoEmail ,generateSlug
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login , logout
 import random
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -272,3 +272,49 @@ def delete_image(request, id):
     hotel_image.delete()
     messages.success(request, "Hotel Image deleted")
     return redirect('/accounts/vendor_dashboard/')
+
+
+@login_required(login_url = 'login_vendor')
+def edit_hotel(request, slug):
+    hotel_obj = Hotel.objects.get(hotel_slug = slug)
+    # Check if the current user is the owner of the hotel
+    if request.user.id != hotel_obj.hotel_owner.id:
+        return HttpResponse("You are not Authorized")
+    
+    if request.method == "POST":
+        # Retrieve updated hotel details from the form
+        hotel_name = request.POST.get('hotel_name')
+        hotel_description = request.POST.get('hotel_description')
+        hotel_price= request.POST.get('hotel_price')
+        hotel_offer_price= request.POST.get('hotel_offer_price')
+        hotel_location= request.POST.get('hotel_location')
+
+        # Update hotel object with new details
+
+        hotel_obj.hotel_name = hotel_name
+        hotel_obj.hotel_description = hotel_description
+        hotel_obj.hotel_price = hotel_price
+        hotel_obj.hotel_offer_price = hotel_offer_price
+        hotel_obj.hotel_location = hotel_location
+        hotel_obj.save()
+
+        messages.success(request, "Hotel Details Updated")
+
+        return HttpResponseRedirect(request.path_info)
+    
+    # Retrieve amenities for rendering in the template
+    ameneties = Ameneties.objects.all()
+
+    # Render the edit_hotel.html template with hotel and amenities as context
+    return render(request,'vendor/edit_hotel.html',context={'hotel':hotel_obj,'ameneties': ameneties})
+
+def logout_view(request):
+    logout(request)
+    return redirect('/accounts/login_vendor/')
+
+
+
+
+
+
+
